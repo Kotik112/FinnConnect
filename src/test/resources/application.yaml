@@ -1,0 +1,7 @@
+database:
+  url: "jdbc:postgresql://localhost:5432/test"
+  user: "test"
+  password: "test"
+
+openexchangerates:
+  apiKey: 400c1908ca9848168433ca04bf3ff9f3
