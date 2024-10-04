@@ -20,8 +20,8 @@ A Ktor server that leverages Openexchangerates and Monzo to give insights into y
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/your-repository.git
-    cd your-repository
+    git clone https://github.com/Kotik112/FinnConnect.git
+    cd FinnConnect
     ```
 
 2. **Set up environment variables:**
