@@ -17,8 +17,6 @@ fun Application.configureRouting(
     exchangeRateService: ExchangeRateService,
     exchangeRateClient: ExchangeRateClient,
     tokenService: OAuthTokenService,
-    clientId: String,
-    clientSecret: String,
     timeProvider: TimeProvider
 ) {
     routing {
@@ -32,6 +30,9 @@ fun Application.configureRouting(
         mainRoute(exchangeRateClient = exchangeRateClient, exchangeRateService)
         exchangeRateRouting(exchangeRateService = exchangeRateService)
         tokenRoutes(tokenService = tokenService)
-        monzoRoutes(clientId = clientId, clientSecret = clientSecret, timeProvider = timeProvider)
+        monzoRoutes(
+            timeProvider = timeProvider,
+            tokenService = tokenService
+        )
     }
 }

@@ -72,7 +72,7 @@ class ExchangeRateRepositoryTest {
         )
         val inserts = exchangeRateRepository.insert(insertedExchangeRates)
 
-        val result = exchangeRateRepository.getLatestExchangeRate(expectedDate)
+        val result = exchangeRateRepository.getLatestExchangeRates(expectedDate)
 
         Assertions.assertEquals(inserts, 2)
         Assertions.assertEquals(result, insertedExchangeRates)

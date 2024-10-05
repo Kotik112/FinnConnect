@@ -21,15 +21,16 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     val apiKey: String = environment.config.property("openexchangerates.apiKey").getString()
-    val clientId: String = environment.config.property("monzo.clientId").getString()
-    val clientSecret: String = environment.config.property("monzo.clientSecret").getString()
 
     val connection = connectToPostgres(false)
 
     val timeProvider = TimeProvider()
     val exchangeRateRepository = ExchangeRateRepository(connection)
     val exchangeRateClient = ExchangeRateClient(apiKey = apiKey)
-    val exchangeRateService = ExchangeRateService(exchangeRateClient = exchangeRateClient, repository = exchangeRateRepository)
+    val exchangeRateService = ExchangeRateService(
+        exchangeRateClient = exchangeRateClient,
+        repository = exchangeRateRepository
+    )
     val tokenRepository = OAuthTokenRepository(connection)
     val tokenService = OAuthTokenService(tokenRepository = tokenRepository, timeProvider = timeProvider)
 
@@ -43,8 +44,6 @@ fun Application.module() {
         exchangeRateService = exchangeRateService,
         exchangeRateClient = exchangeRateClient,
         tokenService = tokenService,
-        clientId = clientId,
-        clientSecret = clientSecret,
         timeProvider = timeProvider
     )
 }

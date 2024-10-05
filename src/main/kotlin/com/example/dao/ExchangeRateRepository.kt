@@ -1,7 +1,7 @@
 package com.example.dao
 
+import com.example.exceptions.NotFoundException
 import com.example.model.ExchangeRate
-import com.example.service.ExchangeRateService
 import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.Date
@@ -66,15 +66,11 @@ class ExchangeRateRepository(private val connection: Connection) {
                 effectiveDate = resultSet.getDate("eff_dt").toLocalDate()
             )
         } else {
-            null
+            throw NotFoundException("Exchange rate not found for currency code: $currencyCode and date: $effectiveDate")
         }
     }
 
-    fun getAll(effectiveDate: LocalDate) : List<ExchangeRate> {
-        return emptyList()
-    }
-
-    fun getLatestExchangeRate(asOfDate: LocalDate) : List<ExchangeRate> {
+    fun getLatestExchangeRates(asOfDate: LocalDate) : List<ExchangeRate> {
         val statement = connection.prepareStatement(GET_LATEST_EXCHANGE_RATE)
         statement.setDate(1, Date.valueOf(asOfDate))
         val resultSet = statement.executeQuery()
