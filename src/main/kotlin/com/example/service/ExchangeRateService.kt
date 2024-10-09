@@ -32,10 +32,6 @@ class ExchangeRateService(private val exchangeRateClient: ExchangeRateClient, pr
             exchangeRateList.add(exchangeRate)
             logger.debug("$key to $value, added to result.")
         }
-        if (exchangeRateList.isEmpty()) {
-            logger.warn("No exchange rates found for currencies: {}", currencies)
-            throw RuntimeExceptions("No exchange rates found for currencies: $currencies")
-        }
         repository.insert(exchangeRateList)
         return exchangeRateList
     }
