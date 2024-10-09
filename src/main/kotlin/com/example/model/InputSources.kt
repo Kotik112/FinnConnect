@@ -43,23 +43,17 @@ data class MonzoErrorResponse(
 @Serializable
 data class BalanceResponse(
     val balance: Int,
-    @SerialName("total_balance")
-    val totalBalance: Int,
-    @SerialName("balance_including_flexible_savings")
-    val balanceIncludingFlexibleSavings: Int,
+    @SerialName("total_balance") val totalBalance: Int,
+    @SerialName("balance_including_flexible_savings") val balanceIncludingFlexibleSavings: Int,
     val currency: String,
-    @SerialName("spend_today")
-    val spendToday: Int,
-    @SerialName("local_currency")
-    val localCurrency: String? = null,
-    @SerialName("local_exchange_rate")
-    val localExchangeRate: Double? = null,
-    @SerialName("local_spend")
-    val localSpend: List<LocalSpend> = emptyList()
+    @SerialName("spend_today") val spendToday: Int,
+    @SerialName("local_currency") val localCurrency: String? = null,
+    @SerialName("local_exchange_rate") val localExchangeRate: Double? = null,
+    @SerialName("local_spend") val localSpend: List<LocalSpend>? = emptyList()
 )
 
 @Serializable
 data class LocalSpend(
-    val amount: Int,
+    val amount: Int? = 0,  // Nullable with default value
     val currency: String
 )

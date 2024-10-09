@@ -3,6 +3,8 @@ package com.example.routes
 import com.example.client.MonzoClient
 import com.example.model.Either
 import com.example.service.OAuthTokenService
+import com.example.utils.DefaultDispatcherProvider
+import com.example.utils.DispatcherProvider
 import com.example.utils.TimeProvider
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respondRedirect
@@ -11,11 +13,16 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.util.Base64
 
-fun Route.monzoRoutes(timeProvider: TimeProvider, tokenService: OAuthTokenService) {
+fun Route.monzoRoutes(
+    timeProvider: TimeProvider,
+    tokenService: OAuthTokenService,
+    dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+) {
     val logger = LoggerFactory.getLogger("MonzoRoutes")
     val monzoClient = MonzoClient(tokenService, timeProvider)
 
@@ -111,21 +118,29 @@ fun Route.monzoRoutes(timeProvider: TimeProvider, tokenService: OAuthTokenServic
     }
 
     get("/balance") {
-        val token = tokenService.getToken(userId)
+        withContext(dispatchers.io) {
+            val startTime = System.currentTimeMillis()
+            val token = tokenService.getToken(userId)
+            val tokenTime = System.currentTimeMillis()
+            logger.debug("Time to fetch token: ${tokenTime - startTime} ms")
 
-        if (token == null) {
-            logger.error("Access token not found for user: {}", userId)
-            call.respond(HttpStatusCode.Unauthorized, acessTokenNotFound)
-            return@get
-        }
+            if (token == null) {
+                logger.error("Access token not found for user: {}", userId)
+                call.respond(HttpStatusCode.Unauthorized, acessTokenNotFound)
+                return@withContext
+            }
+            val balanceStartTime = System.currentTimeMillis()
+            val result = monzoClient.getMonzoBalance(token.accessToken, accountId)
+            val balanceEndTime = System.currentTimeMillis()
+            logger.debug("Time to fetch balance from Monzo: ${balanceEndTime - balanceStartTime} ms")
 
-        val result = monzoClient.getMonzoBalance(token.accessToken, accountId)
-        when (result) {
-            is Either.Success -> call.respond(HttpStatusCode.OK, result.data)
-            is Either.Failure -> {
-                val errorResponse = result.error
-                logger.error("Failed to retrieve balance for user: $userId, Error: $errorResponse")
-                call.respond(HttpStatusCode.Forbidden, errorResponse)
+            when (result) {
+                is Either.Success -> call.respond(HttpStatusCode.OK, result.data)
+                is Either.Failure -> {
+                    val errorResponse = result.error
+                    logger.error("Failed to retrieve balance for user: $userId, Error: $errorResponse")
+                    call.respond(HttpStatusCode.Forbidden, errorResponse)
+                }
             }
         }
     }

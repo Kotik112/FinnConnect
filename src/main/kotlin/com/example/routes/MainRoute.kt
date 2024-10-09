@@ -6,9 +6,6 @@ import com.example.service.ExchangeRateService
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -23,13 +20,9 @@ fun Route.mainRoute(exchangeRateClient: ExchangeRateClient, exchangeRateService:
 
         // Temporary endpoint for fetching exchange rates from openexchangerates.org
         get("runClient") {
-            val scope = CoroutineScope(Dispatchers.IO)
-            val deferred = scope.async {
-                logger.info("Fetched exchange rates from openexchangerates.org")
-                exchangeRateClient.getAllExchangeRates()
-            }
+            logger.debug("Fetched exchange rates from openexchangerates.org")
+            val exchangeRateMap = exchangeRateClient.getAllExchangeRates()
 
-            val exchangeRateMap = deferred.await()
             val exchangeRateList = exchangeRateMap.map {(currency, rate) ->
                 ExchangeRate(
                     currencyCode = currency,

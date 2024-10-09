@@ -133,7 +133,7 @@ class MonzoClient(
                     append(HttpHeaders.Accept, contentType)
                 }
                 parameter("account_id", accountId)  // Include the account_id as a parameter
-            }
+            }.body()
 
             if (response.status == HttpStatusCode.OK) {
                 val balanceResponse: BalanceResponse = response.body()

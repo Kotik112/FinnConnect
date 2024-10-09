@@ -13,6 +13,9 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+/**
+ * Custom serializer for BigDecimal.
+ */
 object BigDecimalSerializer : KSerializer<BigDecimal> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)
 
@@ -25,6 +28,9 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
+/**
+ * Custom serializers for LocalDate and LocalDateTime.
+ */
 object LocalDateSerializer : KSerializer<LocalDate> {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
@@ -39,6 +45,9 @@ object LocalDateSerializer : KSerializer<LocalDate> {
     }
 }
 
+/**
+ * Custom serializer for LocalDateTime.
+ */
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 

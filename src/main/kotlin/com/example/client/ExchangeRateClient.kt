@@ -47,10 +47,17 @@ class ExchangeRateClient(private val apiKey: String) : HttpClientBase() {
         val endPoint = "$baseUrl/latest.json"
 
         val response : ExchangeRateResponse = client.get(endPoint) {
+            headers {
+                headers.append("Accept", "application/json")
+            }
             url {
                 parameters.append("app_id", apiKey)
             }
         }.body()
+        if (response.rates.isEmpty()) {
+            logger.warn("No exchange rates found for USD as base currency.")
+            return emptyMap()
+        }
         logger.debug("Data fetched for all currencies: {}", response.base to response.rates)
 
         val result = mutableMapOf<String, Double>()
