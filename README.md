@@ -46,9 +46,17 @@ A Ktor server that leverages Openexchangerates and Monzo to give insights into y
 Ensure the following configurations are set in your `application.yaml` or as environment variables:
 
 ```yaml
+database:
+  url: your-jdbc-url
+  user: db-user
+  password: db-passwd
+  driver: your-db-driver
 monzo:
-  clientId: ${MONZO_CLIENT_ID}
-  clientSecret: ${MONZO_CLIENT_SECRET}
+  clientId: your-client-id
+  clientSecret: your-client-secret
+  redirectUri: http://localhost:8080/your-redirect-url
+  accountId: your-account-id
+  userId: your-user-id
 
 openexchangerates:
-  apiKey: ${OPENEXCHANGE_API_KEY}
+  apiKey: your-api-key
