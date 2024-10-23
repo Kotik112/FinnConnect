@@ -32,8 +32,6 @@ dependencies {
     // Ktor Client
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
-    // Plaid
-    implementation("com.plaid:plaid-java:9.5.0")
     // ktor client
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
@@ -46,13 +44,17 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-thymeleaf-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
+    // JWT implementation
+    implementation("io.ktor:ktor-server-auth-jvm")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm")
+    // OAuth2
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    // Logging
     implementation("io.ktor:ktor-server-call-logging-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("io.ktor:ktor-server-swagger-jvm")
-    implementation("io.ktor:ktor-server-auth-jvm")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-config-yaml")

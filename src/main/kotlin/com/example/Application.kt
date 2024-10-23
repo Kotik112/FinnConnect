@@ -3,15 +3,12 @@ package com.example
 import com.example.client.ExchangeRateClient
 import com.example.dao.ExchangeRateRepository
 import com.example.dao.OAuthTokenRepository
+import com.example.dao.UserRepository
 import com.example.plugins.*
 import com.example.service.ExchangeRateService
 import com.example.service.OAuthTokenService
 import com.example.utils.TimeProvider
 import io.ktor.server.application.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
 
 
 fun main(args: Array<String>) {
@@ -34,6 +31,8 @@ fun Application.module() {
     val tokenRepository = OAuthTokenRepository(connection)
     val tokenService = OAuthTokenService(tokenRepository = tokenRepository, timeProvider = timeProvider)
 
+    val userRepository = UserRepository(connection)
+
     configureTemplating()
     configureSerialization()
     configureMonitoring()
@@ -46,20 +45,4 @@ fun Application.module() {
         tokenService = tokenService,
         timeProvider = timeProvider
     )
-}
-
-fun scheduleJob(exchangeRateService: ExchangeRateService) {
-    val timer = Timer()
-    val task = object : TimerTask() {
-        override fun run() {
-            CoroutineScope(Dispatchers.IO).launch {
-                val currencies = listOf("USD", "EUR", "GBP")
-                exchangeRateService.getRates(currencies)
-                println("Fetching exchange rates! for ${currencies.joinToString(",")}")
-            }
-            println("Running task!")
-        }
-    }
-    // Schedule the task to run at fixed rate (e.g., every 24 hour)
-    timer.scheduleAtFixedRate(task, 0, 24 * 60 * 60 * 1000)
 }
