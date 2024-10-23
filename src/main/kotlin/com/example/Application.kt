@@ -36,7 +36,6 @@ fun Application.module() {
     configureTemplating()
     configureSerialization()
     configureMonitoring()
-    configureDatabases()
     configureHTTP()
     configureSecurity()
     configureRouting(
