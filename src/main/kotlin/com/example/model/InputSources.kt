@@ -57,3 +57,11 @@ data class LocalSpend(
     val amount: Int? = 0,  // Nullable with default value
     val currency: String
 )
+
+@Serializable
+data class UserDto(
+    val username: String,
+    val email: String,
+    val fullName: String,
+    val role: Role
+)

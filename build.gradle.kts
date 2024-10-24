@@ -6,11 +6,13 @@ val exposed_version: String by project
 val h2_version: String by project
 val postgres_version: String by project
 val ktor_version: String by project
+val testContainerVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.20"
     id("io.ktor.plugin") version "3.0.0-rc-1"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.example"
@@ -20,7 +22,7 @@ application {
     mainClass.set("io.ktor.server.netty.EngineMain")
 
 //    val isDevelopment: Boolean = project.ext.has("development")
-    val isDevelopment: Boolean = true
+    val isDevelopment = true
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
@@ -51,6 +53,8 @@ dependencies {
     implementation("io.ktor:ktor-server-auth:$ktor_version")
     // Logging
     implementation("io.ktor:ktor-server-call-logging-jvm")
+    // Bcrypt
+    implementation("org.mindrot:jbcrypt:0.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
@@ -64,9 +68,26 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.0.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
     // TestContainers
-    testImplementation("org.testcontainers:testcontainers:1.20.1")
-    testImplementation("org.testcontainers:postgresql:1.17.3")
+    testImplementation("org.testcontainers:testcontainers:$testContainerVersion")
+    testImplementation("org.testcontainers:postgresql:$testContainerVersion")
     implementation(kotlin("test"))
+}
+
+ktor {
+    docker {
+        jreVersion.set(JavaVersion.VERSION_17)
+        localImageName.set("FinnConnect-image")
+        imageTag.set("0.0.1-preview")
+        portMappings.set(
+            listOf(
+                io.ktor.plugin.features.DockerPortMapping(
+                    80,
+                    8080,
+                    io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+                )
+            )
+        )
+    }
 }
 
 tasks.test {
@@ -86,3 +107,12 @@ tasks.test {
         showStackTraces = true
     }
 }
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes["Main-Class"] = "com.example.ApplicationKt"
+        }
+    }
+}
+

@@ -1,1 +1,1 @@
-rootProject.name = "com.kotik.finnconnect"
+rootProject.name = "FinnConnect"

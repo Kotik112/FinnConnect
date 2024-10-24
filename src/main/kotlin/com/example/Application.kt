@@ -7,6 +7,7 @@ import com.example.dao.UserRepository
 import com.example.plugins.*
 import com.example.service.ExchangeRateService
 import com.example.service.OAuthTokenService
+import com.example.service.UserService
 import com.example.utils.TimeProvider
 import io.ktor.server.application.*
 
@@ -32,6 +33,7 @@ fun Application.module() {
     val tokenService = OAuthTokenService(tokenRepository = tokenRepository, timeProvider = timeProvider)
 
     val userRepository = UserRepository(connection)
+    val userService = UserService(userRepository)
 
     configureTemplating()
     configureSerialization()
@@ -42,6 +44,7 @@ fun Application.module() {
         exchangeRateService = exchangeRateService,
         exchangeRateClient = exchangeRateClient,
         tokenService = tokenService,
-        timeProvider = timeProvider
+        timeProvider = timeProvider,
+        userService = userService
     )
 }

@@ -38,7 +38,12 @@ class ApplicationTest {
                 "monzo.userId" to "test-user-id",
                 "database.url" to postgresContainer.jdbcUrl,
                 "database.user" to postgresContainer.username,
-                "database.password" to postgresContainer.password
+                "database.password" to postgresContainer.password,
+                "jwt.domain" to "https://www.test.com",
+                "jwt.audience" to "test-audience",
+                "jwt.realm" to "test-realm",
+                "jwt.secret" to "test-secret"
+
             )
         }
         application {

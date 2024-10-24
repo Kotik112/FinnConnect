@@ -12,6 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 /**
  * Custom serializer for BigDecimal.
@@ -51,16 +52,27 @@ object LocalDateSerializer : KSerializer<LocalDate> {
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-    override val descriptor: SerialDescriptor
-        get() = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.LONG)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
-        val timestamp = value.atZone(ZoneId.systemDefault()).toEpochSecond()
-        encoder.encodeLong(timestamp)
+        encoder.encodeString(value.format(formatter))
     }
 
     override fun deserialize(decoder: Decoder): LocalDateTime {
-        val timestamp = decoder.decodeLong()
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault())
+        return LocalDateTime.parse(decoder.decodeString(), formatter)
     }
+}
+
+object UUIDSerializer : KSerializer<UUID> {
+    override val descriptor: SerialDescriptor
+        get() = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): UUID {
+        return UUID.fromString(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: UUID) {
+        encoder.encodeString(value.toString())
+    }
+
 }

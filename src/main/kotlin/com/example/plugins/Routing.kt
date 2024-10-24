@@ -6,8 +6,10 @@ import com.example.routes.healthRouting
 import com.example.routes.mainRoute
 import com.example.routes.monzoRoutes
 import com.example.routes.tokenRoutes
+import com.example.routes.userRoutes
 import com.example.service.ExchangeRateService
 import com.example.service.OAuthTokenService
+import com.example.service.UserService
 import com.example.utils.TimeProvider
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -17,7 +19,8 @@ fun Application.configureRouting(
     exchangeRateService: ExchangeRateService,
     exchangeRateClient: ExchangeRateClient,
     tokenService: OAuthTokenService,
-    timeProvider: TimeProvider
+    timeProvider: TimeProvider,
+    userService: UserService
 ) {
     routing {
         singlePageApplication {
@@ -34,5 +37,6 @@ fun Application.configureRouting(
             timeProvider = timeProvider,
             tokenService = tokenService
         )
+        userRoutes(userService = userService)
     }
 }
